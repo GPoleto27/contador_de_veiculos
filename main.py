@@ -8,10 +8,10 @@ video_source = "video.mp4"
 
 # Altere essas variáveis para definir área de interesse
 start_x = 650
-start_y = 350
+start_y = 450
 
-end_x = 780
-end_y = 450
+end_x = 850
+end_y = 650
 
 # Altere essas variáveis para utilizar outros modelos pré-treinados do YOLO
 model_cfg = 'yolov3.cfg'

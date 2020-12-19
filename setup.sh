@@ -1,3 +1,5 @@
+#! /bin/bash
+
 # Instalando dependências
 pip3 install -r requirements
 

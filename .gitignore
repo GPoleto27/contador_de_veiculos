@@ -127,3 +127,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+# YOLOv3 cfg and weights
+*.cfg
+*.weights

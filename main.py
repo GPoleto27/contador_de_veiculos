@@ -8,10 +8,10 @@ video_source = "video.mp4"
 
 # Altere essas variáveis para definir área de interesse
 start_x = 650
-start_y = 450
+start_y = 350
 
-end_x = 850
-end_y = 650
+end_x = 780
+end_y = 450
 
 # Altere essas variáveis para utilizar outros modelos pré-treinados do YOLO
 model_cfg = 'yolov3.cfg'
@@ -29,6 +29,14 @@ nms_threshold = 0
 # Altere essa variável para True se desejar usar GPU (Necessária GPU NVIDIA e drivers)
 use_gpu = False
 
+global cars_counter
+cars_counter = 0
+global bikes_counter
+bikes_counter = 0
+
+global already_counted
+already_counted = False
+
 cap = cv2.VideoCapture(video_source)
 
 classes_file = 'coco.names'
@@ -45,6 +53,8 @@ if use_gpu:
 else:
     net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
     net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
+
+tracker = cv2.TrackerCSRT_create()
 
 
 # Função para encontrar objetos na imagem
@@ -73,7 +83,8 @@ def find_objects(outputs, img):
                 # Lê a largura e altura
                 w, h = int(detection[2] * width), int(detection[3] * height)
                 # Lê o centro da detecção (manipulando os dados da caixa limitante)
-                x, y = int((detection[0] * width) - (w / 2)), int((detection[1] * height) - (h / 2))
+                x, y = int((detection[0] * width) - (w / 2)
+                           ), int((detection[1] * height) - (h / 2))
                 # Adiciona nas listas
                 bounding_boxes.append([x, y, w, h])
                 class_ids.append(class_id)
@@ -83,11 +94,23 @@ def find_objects(outputs, img):
     indices = cv2.dnn.NMSBoxes(
         bounding_boxes, confidence_values, confidence_threshold, nms_threshold)
 
+    if len(indices) == 0:
+        globals()['already_counted'] = False
+
     for i in indices:
         i = i[0]
         box = bounding_boxes[i]
 
-        x, y, w, h = box[0], box[1], box[2], box[3]
+        x, y, w, h = (box[i] for i in range(4))
+
+        if not globals()['already_counted']:
+            if class_names[class_ids[i]] == 'car':
+                globals()['cars_counter'] += 1
+                globals()['already_counted'] = True
+            elif class_names[class_ids[i]] == 'motorbike':
+                globals()['bikes_counter'] += 1
+                globals()['already_counted'] = True
+
         cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
 
@@ -100,10 +123,24 @@ while True:
     # Lê a imagem
     success, img = cap.read()
 
-    # Recorta a área de interesse
-    cropped = img[start_y:end_y, start_x:end_x]
+    try:
+        # Recorta a área de interesse
+        cropped = img[start_y:end_y, start_x:end_x]
+    except:
+        break
+
     # Desenha um retângulo na área de interesse
     cv2.rectangle(img, (start_x, start_y), (end_x, end_y), (255, 255, 255), 2)
+
+    cv2.putText(img, "Carros: ", (25, 50),
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
+    cv2.putText(img, str(cars_counter), (150, 50),
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
+
+    cv2.putText(img, "Motos:", (25, 75),
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
+    cv2.putText(img, str(bikes_counter), (150, 75),
+                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
 
     # Cria um Blob a partir da imagem
     blob = cv2.dnn.blobFromImage(
@@ -121,8 +158,13 @@ while True:
     # Encontra os objetos na imagem
     find_objects(outputs, cropped)
 
-    # Mostra a imagem computada
-    cv2.imshow('Contador', img)
+    try:
+        # Mostra a imagem computada
+        cv2.imshow('Contador', img)
+    except:
+        break
 
     # Delay para o próximo frame
     cv2.waitKey(1)
+
+print(cars_counter, " ", bikes_counter)

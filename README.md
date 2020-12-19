@@ -71,4 +71,5 @@ Dentro de _main.py_ edite
 
 
 # TODO
-- Contar quantos carros e quantas motos passaram pelo local
+- Rodar em GPU
+- Criar um Docker

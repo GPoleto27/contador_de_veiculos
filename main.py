@@ -26,9 +26,6 @@ confidence_threshold = .5
 # Quanto menor, menos caixas (reduza se encontrar muitas caixas sobrepostas, aumente caso esteja ignorando muitas detecções)
 nms_threshold = 0
 
-# Altere essa variável para True se desejar usar GPU (Necessária GPU NVIDIA e drivers)
-use_gpu = False
-
 global cars_counter
 cars_counter = 0
 global bikes_counter
@@ -46,15 +43,8 @@ with open(classes_file, 'rt') as f:
 
 net = cv2.dnn.readNetFromDarknet(model_cfg, model_weights)
 
-if use_gpu:
-    net.setPreferableBackend(cv2.dnn.DNN_BACKEND_CUDA)
-    net.setPreferableTarget(cv2.dnn.DNN_TARGET_CUDA)
-
-else:
-    net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
-    net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
-
-tracker = cv2.TrackerCSRT_create()
+net.setPreferableBackend(cv2.dnn.DNN_BACKEND_OPENCV)
+net.setPreferableTarget(cv2.dnn.DNN_TARGET_CPU)
 
 
 # Função para encontrar objetos na imagem
@@ -123,48 +113,47 @@ while True:
     # Lê a imagem
     success, img = cap.read()
 
-    try:
+    if success:
         # Recorta a área de interesse
         cropped = img[start_y:end_y, start_x:end_x]
-    except:
-        break
 
-    # Desenha um retângulo na área de interesse
-    cv2.rectangle(img, (start_x, start_y), (end_x, end_y), (255, 255, 255), 2)
+        # Desenha um retângulo na área de interesse
+        cv2.rectangle(img, (start_x, start_y),
+                      (end_x, end_y), (255, 255, 255), 2)
 
-    cv2.putText(img, "Carros: ", (25, 50),
-                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
-    cv2.putText(img, str(cars_counter), (150, 50),
-                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
+        cv2.putText(img, "Carros: ", (25, 50),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
+        cv2.putText(img, str(cars_counter), (150, 50),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
 
-    cv2.putText(img, "Motos:", (25, 75),
-                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
-    cv2.putText(img, str(bikes_counter), (150, 75),
-                cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
+        cv2.putText(img, "Motos:", (25, 75),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
+        cv2.putText(img, str(bikes_counter), (150, 75),
+                    cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 0), 2)
 
-    # Cria um Blob a partir da imagem
-    blob = cv2.dnn.blobFromImage(
-        cropped, 1/255, (scale, scale),
-        [0, 0, 0], 1,
-        crop=False
-    )
+        # Cria um Blob a partir da imagem
+        blob = cv2.dnn.blobFromImage(
+            cropped, 1/255, (scale, scale),
+            [0, 0, 0], 1,
+            crop=False
+        )
 
-    # Define o Blob como a entrada da Rede
-    net.setInput(blob)
+        # Define o Blob como a entrada da Rede
+        net.setInput(blob)
 
-    # Lê as camadas de saída
-    outputs = net.forward(output_names)
+        # Lê as camadas de saída
+        outputs = net.forward(output_names)
 
-    # Encontra os objetos na imagem
-    find_objects(outputs, cropped)
+        # Encontra os objetos na imagem
+        find_objects(outputs, cropped)
 
-    try:
-        # Mostra a imagem computada
-        cv2.imshow('Contador', img)
-    except:
-        break
+        try:
+            # Mostra a imagem computada
+            cv2.imshow('Contador', img)
+        except:
+            break
 
-    # Delay para o próximo frame
-    cv2.waitKey(1)
+        # Delay para o próximo frame
+        cv2.waitKey(1)
 
 print(cars_counter, " ", bikes_counter)

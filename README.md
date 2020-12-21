@@ -11,6 +11,7 @@ Aplicação em Python utilizando YOLO e OpenCV para detecção e contagem de car
 
 ## Instalando as dependências, configurações e pesos da rede
 
+    $ cd contador_de_veiculos
     $ sudo chmod +x setup.sh
     $ ./setup.sh
 
@@ -22,11 +23,9 @@ Aplicação em Python utilizando YOLO e OpenCV para detecção e contagem de car
 
 ## Alterando a fonte do vídeo
 
-Dentro de _main.py_ edite
+Adicione o argumento _-v_ ou *--video_source*
 
 > Altere essa variável para utilizar outros videos ou câmeras.
-
-    video_source = "video.mp4"
 
 Você pode usar seu próprio arquivo de vídeo ou webcam.
 
@@ -36,27 +35,18 @@ Para arquivo, apenas modifique o nome do arquivo, para usar sua webcam, altere p
 
 ## Alterando a área de interesse
 
-Dentro de _main.py_ edite
+Adicione o argumento _-r_ ou *--region_of_interest*
 
 > Altere essas variáveis para definir área de interesse.
 
-    start_x = 650
-    start_y = 450
-
-    end_x = 850
-    end_y = 650
-
 Definindo o início e fim (em x e y) de sua área de interesse.
+(start_x, start_y, end_x, end_y)
 
 ## Alterando os modelos pré-treinados do YOLO
 
-Dentro de _main.py_ edite
-
-> Altere essas variáveis para utilizar outros modelos pré-treinados do YOLO
-
-    model_cfg = 'yolov3.cfg'
-    model_weights = 'yolov3.weights'
-    scale = 320
+Adicione o argumento _-cfg_ ou *--model_cfg* para alterar o arquivo de configuração da rede YOLOv3
+Adicione o argumento _-w_ ou *--model_weights* para alterar o arquivo de pesos da rede YOLOv3
+Adicione o argumento _-s_ ou *--scale* para alterar a escala da rede YOLOv3
 
 Este repositório já baixa as configurações e pesos para _320_.
 
@@ -64,19 +54,8 @@ Para mais detalhes e downloads de redes pré-treinadas, consulte [YOLO](https://
 
 ## Alterando a tolerância das detecções
 
-Dentro de _main.py_ edite
-
-> Altere esse variável para alterar a tolerância de confiabilidade do resultado.
-
-> Define o quão confiável um resultado deve ser para não ser descartado.
-
-    confidence_threshold = .5
-
-> Altere esse variável para alterar a tolerância das caixas limitantes sobrepostas.
-
-> Quanto menor, menos caixas (reduza se encontrar muitas caixas sobrepostas, aumente caso esteja ignorando muitas detecções).
-
-    nms_threshold = 0
+Adicione o argumento _-ct_ ou *--confidence_threshold* para alterar a tolerância de confiabilidade das detecções
+Adicione o argumento _-nms_ ou *--nms_threshold* para alterar a tolerância de caixas limitantes sobrepostas
 
 # TODO
 

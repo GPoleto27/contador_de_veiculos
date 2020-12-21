@@ -3,28 +3,36 @@
 from cv2 import cv2
 import numpy as np
 
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-v', '--video_source', dest='video_source', help="Arquivo de origem do vídeo ou índice da câmera alvo", default="video.mp4")
+parser.add_argument('-r', '--region_of_interest', dest='roi', help="Região de interesse (start_x, start_y, end_x, end_y,)", default=(650, 450, 850, 650))
+parser.add_argument('-cfg', '--model_cfg', dest='cfg', help="Arquivo de configuração da rede YOLOv3", default="yolov3.cfg")
+parser.add_argument('-w', '--model_weights', dest='weights', help="Arquivo de pesos da rede YOLOv3", default="yolov3.weights")
+parser.add_argument('-s', '--scale', dest='scale', help="Escala da rede", default=320)
+parser.add_argument('-ct', '--confidence_threshold', dest='ct', help="Tolerância de confiabilidade das detecções", default=.5)
+parser.add_argument('-nms', '--nms_threshold', dest='nms', help="Tolerância de caixas limitantes sobrepostas", default=0)
+args = parser.parse_args()
+
 # Altere essa variável para utilizar outros videos ou câmeras
-video_source = "video.mp4"
+video_source = args.video_source
 
 # Altere essas variáveis para definir área de interesse
-start_x = 650
-start_y = 450
-
-end_x = 850
-end_y = 650
+start_x, start_y, end_x, end_y = (args.roi[i] for i in range(4))
 
 # Altere essas variáveis para utilizar outros modelos pré-treinados do YOLO
-model_cfg = 'yolov3.cfg'
-model_weights = 'yolov3.weights'
-scale = 320
+model_cfg = args.cfg
+model_weights = args.weights
+scale = args.scale
 
 # Altere esse variável para alterar a tolerância de confiabilidade do resultado
 # Define o quão confiável um resultado deve ser para não ser descartado
-confidence_threshold = .5
+confidence_threshold = args.ct
 
-# Altere esse variável para alterar a tolerância das caixas limitantes sobrepostas
+# Altere esse variável para alterar a tolerância de caixas limitantes sobrepostas
 # Quanto menor, menos caixas (reduza se encontrar muitas caixas sobrepostas, aumente caso esteja ignorando muitas detecções)
-nms_threshold = 0
+nms_threshold = args.nms
 
 global cars_counter
 cars_counter = 0

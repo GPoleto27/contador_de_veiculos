@@ -8,4 +8,4 @@ wget https://pjreddie.com/media/files/yolov3.weights
 wget https://raw.githubusercontent.com/pjreddie/darknet/master/cfg/yolov3.cfg
 
 # Alterando a permissão de execução
-chmod +x main.py
+sudo chmod +x main.py

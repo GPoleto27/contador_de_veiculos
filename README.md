@@ -3,10 +3,6 @@
 Aplicação em Python utilizando YOLO e OpenCV para detecção e contagem de carros e motos em um vídeo.
 [Video DEMO](https://youtu.be/z4OdriQ_1Nc)
 
-Construa a imagem a partir do dockerfile ([Como?](https://docs.docker.com/engine/reference/commandline/build/))
-
-Ou:
-
 # Instalação e execução
 
 ## Clonando o Repositório

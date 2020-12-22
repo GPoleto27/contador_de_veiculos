@@ -161,7 +161,10 @@ while True:
         except:
             break
 
-        # Delay para o próximo frame
-        cv2.waitKey(1)
+        if cv2.waitKey(1) == 27:
+            break
+
+cv2.destroyAllWindows()
+cap.release()
 
 print(cars_counter, " ", bikes_counter)

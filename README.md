@@ -1,7 +1,7 @@
 # Contador de Veículos
 
 Aplicação em Python utilizando YOLO e OpenCV para detecção e contagem de carros e motos em um vídeo.
-[Video DEMO](https://youtu.be/z4OdriQ_1Nc)
+[Video DEMO](https://youtu.be/jbuc8bR1FSs)
 
 # Instalação e execução
 

@@ -131,3 +131,6 @@ dmypy.json
 # YOLOv3 cfg and weights
 *.cfg
 *.weights
+
+# Result video
+*.avi

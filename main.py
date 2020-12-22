@@ -117,6 +117,8 @@ out_indices = net.getUnconnectedOutLayers()
 
 output_names = [layer_names[i[0] - 1] for i in out_indices]
 
+result = cv2.VideoWriter('result.avi', cv2.VideoWriter_fourcc(*'XVID'), 30.0, (1280, 720))
+
 while True:
     # Lê a imagem
     success, img = cap.read()
@@ -155,16 +157,16 @@ while True:
         # Encontra os objetos na imagem
         find_objects(outputs, cropped)
 
-        try:
-            # Mostra a imagem computada
-            cv2.imshow('Contador', img)
-        except:
-            break
+        # Mostra a imagem computada
+        cv2.imshow('Contador', img)
 
-        if cv2.waitKey(1) == 27:
-            break
+        result.write(img)
 
-cv2.destroyAllWindows()
+    if cv2.waitKey(1) == 27:
+        break
+
+result.release()
 cap.release()
+cv2.destroyAllWindows()
 
 print(cars_counter, " ", bikes_counter)
